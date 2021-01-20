@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Mine-Sweapper</title>
+</head>
+
+<body onload="init()">
+    <h1>Mine Sweapper</h1>
+    <h2 class="life"></h2>
+    <h3 class="emoji"></h3>
+    <div class="options">
+        <button onclick="levelChose(4,2)">Beginner</button>
+        <button onclick="levelChose(8,12)">Medium</button>
+        <button onclick="levelChose(12,30)">Expert</button>
+    </div>
+    <div class="timer"></div>
+    <table>
+        <tbody class="game-board">
+        </tbody>
+    </table>
+    <div class="restart">
+        <h2 onclick="restart()">New Game</h2>
+    </div>
+    <script src="js/utils.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>

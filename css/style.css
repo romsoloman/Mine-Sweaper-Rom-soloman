@@ -1,0 +1,87 @@
+body {
+    box-sizing: border-box;
+    background-color: rgb(23,40 ,56);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+h1{
+    text-align: center;
+    font-size: 55px;
+
+}
+
+.life {
+    position: absolute;
+    font-size: 50px;
+    left: 7%;
+    bottom: 60%;
+}
+.emoji {
+    font-size: 50px;
+    text-align: center;
+}
+
+.options {
+    position: absolute;
+    display: inline-block;
+    top: 60px;
+    left: 70px;
+}
+.options button {
+    height: 30px;
+    background-color: slategray;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+.options button:hover {
+    transition: 0.7s;
+    background-color:rgb(86, 98, 110) ;
+}
+
+.timer{
+    position: absolute;
+    right: 80px;
+    top: 180px;
+    height: 30px;
+    width: 100px;
+    background-color: rgb(48, 83, 116);
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    line-height: 30px;
+}
+
+table{
+    width: 37%;
+    height: 350px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 5px;
+}
+
+.cell {
+    background-color: rgb(245, 245, 245);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.clicked {
+    background-color: rgb(179, 179, 179);
+}
+
+.restart {
+    margin: 0 auto;
+    width: 15%;
+    height: 50px;
+    line-height: 50px;
+    background-color:rgb(179, 179, 179) ;
+    text-align: center;
+}
+.restart h2{
+    cursor: pointer;
+    margin: 0;
+}
