@@ -5,12 +5,13 @@ const WIN_EMOJI = '😎';
 const LOSE_EMOJI = '😭';
 const REGULAR_EMOJI = '🙂';
 
+var gEmptysPos;
+var gMinesLocations;
 var gBoard;
 var gLevel = {
-    SIZE: 4,
-    MINES: 2
+    SIZE: 8,
+    MINES: 12
 };
-var gMinesLocations;
 
 var gGame = {
     isOn: false,
@@ -18,6 +19,9 @@ var gGame = {
     isWin: null,
     lifesCount: 3,
     firstClick: true,
+    hintsCount: 3,
+    isHint: false,
+    safeClickes: 3,
 };
 
 function init() {
@@ -36,7 +40,7 @@ function buildBoard() {
         board.push([]);
         for (var j = 0; j < gLevel.SIZE; j++) {
             board[i][j] = {
-                minesAroundCount: null, isShown: false, isMine: false, isMarked: false
+                minesAroundCount: null, isShown: false, isMine: false, isMarked: false,
             };
         }
     }
@@ -66,20 +70,23 @@ function setMinesNegsCount(location) {
 
 function cellClicked(elCell) {
     if (gGame.firstClick) {
+        startTimer();
         gMinesLocations = getRandomLocationOfMines(gLevel.SIZE, gLevel.MINES);
         renderMinesInBoard();
-        console.log(gMinesLocations);
-        startTimer();
         gGame.firstClick = false;
+        gEmptysPos = getEmptyPositions(gBoard)
+        console.log(gBoard);
     }
     if (gGame.isOn) {
         var id = elCell.getAttribute('id')
         var locationCell = getCellById(id);
         var currCell = gBoard[locationCell.i][locationCell.j];
         if (!currCell.isMine && !currCell.isShown && !currCell.isMarked) {
-            elCell.classList.add('clicked')
-            gBoard[locationCell.i][locationCell.j].isShown = true;
-            setMinesNegsCount(locationCell);
+            currCell.isShown = true;
+            var negsCount = setMinesNegsCount(locationCell);
+            if (negsCount === 0) {
+                expandShown(gBoard, locationCell);
+            }
         }
         if (!gBoard[locationCell.i][locationCell.j].isShown && currCell.isMine) {
             if (gGame.lifesCount > 0) {
@@ -87,20 +94,13 @@ function cellClicked(elCell) {
                 renderMineCell(locationCell, MINE)
                 renderLifesCount(gGame.lifesCount);
             } else {
+                renderMineCell(locationCell, MINE)
+                renderLifesCount(gGame.lifesCount);
                 gGame.isWin = false;
                 gameOver();
             }
         }
     } else return;
-}
-
-function getCellById(id) {
-    var getCellId = id.split('cell')[1];
-    var locationI = +getCellId.split('-')[0];
-    var locationJ = +getCellId.split('-')[1];
-    var locationCell = { i: locationI, j: locationJ };
-
-    return locationCell;
 }
 
 function cellMarked(elCell) {
@@ -133,6 +133,40 @@ function renderMinesInBoard() {
     }
 }
 
+function renderEmojiMood(emoji) {
+    var elEmoji = document.querySelector('.emoji');
+    elEmoji.innerText = emoji;
+}
+
+function renderLifesCount(lifes) {
+    var elLifes = document.querySelector('.lifes')
+    if (lifes === 3) elLifes.innerText = '❤️❤️❤️';
+    else if (lifes === 2) elLifes.innerText = '❤️❤️';
+    else if (lifes === 1) elLifes.innerText = '❤️';
+    else elLifes.innerText = '';
+}
+
+function levelChose(size, mines) {
+    gLevel.SIZE = size;
+    gLevel.MINES = mines;
+    restart();
+}
+
+function safeClicked() {
+    if (gGame.safeClickes > 0) {
+        gGame.safeClickes--;
+        var elCountSafe = document.querySelector('.safe-counter');
+        elCountSafe.innerText = `${gGame.safeClickes} clicks availible`;
+        var safePos = getRandomPosSafe(gEmptysPos);
+        renderSafetyCell(safePos, true);
+        setTimeout(() => {
+            renderSafetyCell(safePos, false);
+        }, 2000)
+    } else {
+        alert('You took all the possible Safety Clicks!!')
+    }
+}
+
 function gameOver() {
     if (gGame.isWin) {
         console.log('Winner');
@@ -144,23 +178,6 @@ function gameOver() {
         gGame.isOn = false;
     }
     pauseTimer();
-}
-
-function renderEmojiMood(emoji) {
-    var elEmoji = document.querySelector('.emoji');
-    elEmoji.innerText = emoji;
-}
-
-function renderLifesCount(lifes) {
-    var elLifes = document.querySelector('.life')
-    if (lifes === 3) elLifes.innerText = '❤️❤️❤️';
-    else if (lifes === 2) elLifes.innerText = '❤️❤️';
-    else if (lifes === 1) elLifes.innerText = '❤️';
-    else elLifes.innerText = '';
-}
-
-function levelChose(size, mines) {
-
 }
 
 function restart() {
